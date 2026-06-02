@@ -1,0 +1,42 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-k3-integrations
+  labels:
+    app: sample-k3-integrations
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-k3-integrations
+  template:
+    metadata:
+      labels:
+        app: sample-k3-integrations
+    spec:
+      containers:
+        - name: sample-k3-integrations
+          image: your-docker-repo/sample-k3-integrations:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            # Uncomment and set if you require APP_UID
+            # - name: APP_UID
+            #   value: "1000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-k3-integrations-service
+  labels:
+    app: sample-k3-integrations
+spec:
+  type: ClusterIP
+  selector:
+    app: sample-k3-integrations
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
